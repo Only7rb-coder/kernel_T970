@@ -13,9 +13,9 @@ jobs:
       - name: Update dependencies
         run: |
           sudo apt update
-          sudo apt install -y build-essential bc flex bison libncurses5-dev libssl-dev git ccache python2.7 libtinfo6
+          sudo apt install -y build-essential bc flex bison libncurses5-dev libssl-dev git ccache python3 libtinfo6
           sudo rm -rf /usr/bin/python
-          sudo ln -s /usr/bin/python2.7 /usr/bin/python
+          sudo ln -s /usr/bin/python3 /usr/bin/python
           python --version
           
       - name: Checkout Repo
