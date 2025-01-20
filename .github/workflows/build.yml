@@ -21,11 +21,20 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
         
+      - name: List toolchain directories
+        run: |
+          ls -la toolchain/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/bin/
+          ls -la toolchain/llvm-arm-toolchain-ship/10.0/bin/
+
       - name: Install gcc and clang
         run: |
           git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9 toolchain/gcc/linux-x86/aarch64/aarch64-linux-android-4.9
           git clone https://github.com/proprietary-stuff/llvm-arm-toolchain-ship-10.0 toolchain/llvm-arm-toolchain-ship/10.0
- 
+
+      - name: Fix line endings for Kconfig files
+        run: |
+          find . -name "*.Kconfig" -exec dos2unix {} \;
+      
       - name: Build kernel
         run: |
           args="-j$(nproc --all) O=out ARCH=arm64 CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=$(pwd)/toolchain/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/bin/aarch64-linux-android- REAL_CC=$(pwd)/toolchain/llvm-arm-toolchain-ship/10.0/bin/clang"
@@ -33,7 +42,7 @@ jobs:
           export LLVM=1
           export LLVM_IAS=1
           make ${args} vendor/gts7xlwifi_eur_open_defconfig
-          make ${args}
+          make ${args} V=1
 
       - name: Build AK3
         run: |
